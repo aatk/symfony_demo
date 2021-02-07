@@ -1,10 +1,34 @@
-
 index:
-    path: /
-    controller: App\Controller\DefaultController::index
+  path: /
+  controller: App\Controller\DefaultController::index
 
+app_api_install:
+  path: /api/install
+  controller: App\Controller\IndexController::install
+  methods: GET
 
-# the "app_lucky_number" route name is not important yet
-app_lucky_number:
-  path: /lucky/number
-  controller: App\Controller\LuckyController::number
+app_api_get:
+  path: /api/get/{id}
+  controller: App\Controller\IndexController::getid
+  methods: GET
+
+app_api_list:
+  path: /api/list/{id}/{limit}
+  controller: App\Controller\IndexController::list
+  methods: GET
+
+#app_api_search:
+#  path: /api/search/{find}/{id}/{limit}
+#  controller: App\Controller\IndexController::search
+#
+#app_api_post:
+#  path: /api/post
+#  controller: App\Controller\IndexController::post
+#
+#app_api_put:
+#  path: /api/put
+#  controller: App\Controller\IndexController::put
+#
+#app_api_delete:
+#  path: /api/delete
+#  controller: App\Controller\IndexController::delete
