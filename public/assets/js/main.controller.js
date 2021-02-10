@@ -14,18 +14,18 @@ let main = {
     
     freeNowUser: function ()
     {
-        this.nowuser.id         = 0;
-        this.nowuser.firstname  = "";
-        this.nowuser.secondname = "";
-        this.nowuser.surname    = "";
+        main.nowuser.id         = 0;
+        main.nowuser.firstname  = "";
+        main.nowuser.secondname = "";
+        main.nowuser.surname    = "";
     },
     
     formFillNowUser: function ()
     {
-        $("#id").attr("value", main.nowuser.id);
-        $("#firstname").attr("value", main.nowuser.firstname);
-        $("#secondname").attr("value", main.nowuser.secondname);
-        $("#surname").attr("value", main.nowuser.surname);
+        $("#id").val(main.nowuser.id);
+        $("#firstname").val(main.nowuser.firstname);
+        $("#secondname").val(main.nowuser.secondname);
+        $("#surname").val(main.nowuser.surname);
     },
     
     
@@ -85,7 +85,6 @@ let main = {
     {
         let selector = '.user[data-userid="' + main.nowuser.id + '"]';
         $(selector).remove();
-        main.freeNowUser();
     },
     
     FreeUsersTable: function ()
@@ -102,14 +101,15 @@ let main = {
         let lastid = main.lastid + 1;
         let find   = $("#findinput").val();
         
-        if (find === "" )
+        if (find === "")
         {
             //Ищем как обычно
             main.FreeUsersTable();
             main.onMoreClick();
-        } else
+        }
+        else
         {
-            let url    = baseurl + '/api/search/' + find+ '/' + lastid + '/' + main.limit;
+            let url = baseurl + '/api/search/' + find + '/' + lastid + '/' + main.limit;
             $.getJSON(url, function (data)
             {
                 main.loaduserslist(data);
@@ -228,6 +228,7 @@ let main = {
                 201: function (data)
                 {
                     main.DeleteUserFromList();
+                    main.freeNowUser();
                 },
                 404: function ()
                 {
