@@ -49,9 +49,11 @@ class IndexController extends AbstractController
             }
         }
         
-        $result = [ 'result' => $ID ];
+        $res = [ 'result' => $ID ];
         
-        return new Response(json_encode($result));
+        $result = $this->json($res);
+        
+        return $result;
     }
     
     public function getid($id)
@@ -63,16 +65,10 @@ class IndexController extends AbstractController
         if ($id > 0)
         {
             $usersRepository = new UsersRepository($this->getDoctrine());
-            $User            = $usersRepository->find($id);
+            $UserArray       = [];
+            $UserArray[]     = $usersRepository->find($id)->toArray();
             
-            $UserArray   = [];
-            $UserArray[] = [
-                "id"         => $User->getId(),
-                "firstname"  => $User->getFirstname(),
-                "secondname" => $User->getSecondname(),
-                "surname"    => $User->getSurname(),
-            ];
-            $result->setContent(json_encode($UserArray, JSON_UNESCAPED_UNICODE));
+            $result = $this->json($UserArray);
         }
         else
         {
@@ -93,8 +89,7 @@ class IndexController extends AbstractController
         {
             $usersRepository = new UsersRepository($this->getDoctrine());
             $Users           = $usersRepository->findById($id, $limit);
-            
-            $result->setContent(json_encode($Users, JSON_UNESCAPED_UNICODE));
+            $result          = $this->json($Users);
         }
         else
         {
@@ -109,8 +104,9 @@ class IndexController extends AbstractController
     {
         //@Get("/api/search/{find}/{id}/{limit}")
         $usersRepository = new UsersRepository($this->getDoctrine());
-        $findresult = $usersRepository->findByText($find, $id, $limit);
-        $result = $this->json($findresult);
+        $findresult      = $usersRepository->findByText($find, $id, $limit);
+        $result          = $this->json($findresult);
+        
         return $result;
     }
     
@@ -151,9 +147,8 @@ class IndexController extends AbstractController
     {
         //@Post("/api/post")
         $result = new Response();
-        
-        $rq         = new Request();
-        $content    = $rq->getContent();
+    
+        $content    = (new Request())->getContent();
         $json_items = json_decode($content, true);
         foreach ($json_items as $json)
         {
@@ -161,9 +156,9 @@ class IndexController extends AbstractController
             $UserInfo = $this->saveUsers($json);
             if ($UserInfo)
             {
-                $UserInfoArray = [];
+                $UserInfoArray   = [];
                 $UserInfoArray[] = json_decode($this->json($UserInfo)->getContent(), true);
-                $result = $this->json($UserInfoArray)->setStatusCode(201);
+                $result          = $this->json($UserInfoArray)->setStatusCode(201);
             }
             else
             {
@@ -180,8 +175,7 @@ class IndexController extends AbstractController
         //@Put("/api/put")
         $result = new Response();
         
-        $rq         = new Request();
-        $content    = $rq->getContent();
+        $content    = (new Request())->getContent();
         $json_items = json_decode($content, true);
         foreach ($json_items as $json)
         {
@@ -202,15 +196,14 @@ class IndexController extends AbstractController
         
         return $result;
     }
-
+    
     public function delete()
     : Response
     {
         //@Delete("/api/delete")
         $result = new Response();
     
-        $rq         = new Request();
-        $content    = $rq->getContent();
+        $content    = (new Request())->getContent();
         $json_items = json_decode($content, true);
         foreach ($json_items as $json)
         {
@@ -218,13 +211,13 @@ class IndexController extends AbstractController
             if ($id > 0)
             {
                 $entityManager = new UsersRepository($this->getDoctrine());
-                $User = $entityManager->find($id);
+                $User          = $entityManager->find($id);
                 
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($User);
                 $entityManager->remove($User);
                 $entityManager->flush();
-    
+                
                 $result->setStatusCode(201);
             }
             else
@@ -232,9 +225,8 @@ class IndexController extends AbstractController
                 $result->setStatusCode(404);
             }
         }
-
+        
         return $result;
     }
-
 }
 
